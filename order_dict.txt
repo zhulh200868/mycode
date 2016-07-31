@@ -1,0 +1,32 @@
+1、有序字典
+在平常使用的字典是无序的，例如：
+print 'Regular dictionary:'
+d = {}
+d['a'] = 'A'
+d['b'] = 'B'
+d['c'] = 'C'
+for k, v in d.items():
+    print k, v
+打印结果如下：
+Regular dictionary:
+a A
+c C
+b B
+
+
+而我们想要用到有序字典，就需要使用OrderedDict
+
+from collections import OrderedDict
+print '\nOrderedDict:'
+d = OrderedDict()
+d['a'] = 'A'
+d['b'] = 'B'
+d['c'] = 'C'
+for k, v in d.items():
+    print k, v
+
+打印结果如下：
+OrderedDict:
+a A
+b B
+c C

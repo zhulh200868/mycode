@@ -1,0 +1,19 @@
+有的时候想让字典的value变成set、list等等。
+你可能会面临如下的问题：
+from collections import defaultdict
+
+pairs={'a':1,'b':2}
+d = {}
+for key,value in pairs.items():
+    if key not in d:
+        d[key] = []
+    d[key].append(value)
+
+print d
+——————————————————————————————————————————
+d = defaultdict(list)
+for key,value in pairs.items():
+    d[key].append(value)
+
+print d
+

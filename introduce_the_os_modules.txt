@@ -1,0 +1,67 @@
+python之执行shell命令的几个方法小结
+最近在写salt模块的时候需要执行linux shell命令，之前就只会os.system和os.popen两个模块，那么就先介绍一下这两个模块：
+os.system()的用法如下：
+>>> import os
+>>> ret=os.system('df -h')
+Filesystem            Size  Used Avail Use% Mounted on
+/dev/sda2             8.0G  3.6G  4.0G  48% /
+tmpfs                 242M   72K  242M   1% /dev/shm
+>>> print ret
+0
+但是发现页面上打印的命令执行结果 0或者其它数字，从返回值中无法得到你想要的结果，虽然你可以通过返回值是0判断命令是成功执行的。
+
+接下来说一下os.pepen()
+>>> ret=os.popen('df -h')
+>>> print ret.read()
+Filesystem            Size  Used Avail Use% Mounted on
+/dev/sda2             8.0G  3.6G  4.0G  48% /
+tmpfs                 242M   72K  242M   1% /dev/shm
+
+通过os.popen()返回的是命令执行的对象，对其进行读取read()的操作可以看到执行的输出。但是无法读取程序执行的返回值。
+
+再看到前辈的一段代码中，使用了commands.getstatusoutput()方法，例如：
+>>> import commands
+>>> (status, output) = commands.getstatusoutput("df -h")
+>>> print status
+0
+>>> print output
+Filesystem            Size  Used Avail Use% Mounted on
+/dev/sda2             8.0G  3.6G  4.0G  48% /
+tmpfs                 242M   72K  242M   1% /dev/shm
+
+查看了commands.py的源代码，找到如下代码：
+def getstatusoutput(cmd):
+    """Return (status, output) of executing cmd in a shell."""
+    import os
+    pipe = os.popen('{ ' + cmd + '; } 2>&1', 'r')
+    text = pipe.read()
+    sts = pipe.close()
+    if sts is None: sts = 0
+    if text[-1:] == '\n': text = text[:-1]
+    return sts, text
+从上面可以看出，commands还是有调用os.popen来到过命令执行的结果
+
+下面详细介绍一下commands.py中的一些模块：
+1、commands.getoutput('shell command')
+执行shell命令，返回结果(string类型)
+>>> commands.getoutput('pwd')
+'/root'
+
+2、commands.getstatus('file')
+该函数已被python丢弃，不建议使用，它返回ls -ld file的结果(string)
+>>> commands.getstatus('mysql-community-release-el7-5.noarch.rpm')
+__main__:1: DeprecationWarning: commands.getstatus() is deprecated
+'-rw-r--r--. 1 root root 6140 Jul  1 14:13 mysql-community-release-el7-5.noarch.rpm'
+
+3、commands.getstatusoutput('shell command')
+执行shell命令，返回两个元素的元组tuple(status,result)，status为int类型，restult为string类型。
+cmd的执行方式是{ cmd; } 2 >&1,故返回结果包含标准输出和标准错误。
+>>> commands.getstatusoutput('pwd')
+(0, '/root')
+
+因此在想要通过shell去执行一些命令的话，可以使用commands.getstatusoutput()方法来进行返回值的判断和返回结果
+
+
+
+
+
