@@ -18,3 +18,15 @@ salt的api程序，以后有需要调用salt可以使用该程序
 5、thread_pool.py
 说明：
 一个线程池程序
+
+6、multipreocess_demo.py
+说明：
+一个多进程的示例
+
+7、threading_demo.py
+说明：
+一个多线程的示例
+
+8、time_demo.py
+说明：
+时间函数的模块
