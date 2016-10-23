@@ -128,16 +128,18 @@
 #######多线程写文件#######
 import time
 import threading
+import logger
 
 def addNum():
     global num #在每个线程中都获取这个全局变量
     time.sleep(1)
     if lock.acquire(): #修改数据前枷锁
-        with open("E:/1.txt","a") as files:
-            num -= 1
-            print('num-->%s'%num)
-            files.write('num-->%s\n'%num)
-            files.flush()
+        # with open("E:/1.txt","a") as files:
+        num -= 1
+        print('num-->%s'%num)
+        logger.logger.info('num-->%s'%num)
+            # files.write('num-->%s\n'%num)
+            # files.flush()
         lock.release() #修改后释放
 
 num = 10  #设定一个共享变量
