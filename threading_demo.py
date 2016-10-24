@@ -1,6 +1,48 @@
 #!/usr/bin/env python
 # -*- coding=utf8 -*-
 
+#######################
+#用线程池来写同一个文件
+#######################
+#######多线程写文件#######
+import time
+import threading
+import logger
+import thread_pool
+
+def addNum():
+    global num #在每个线程中都获取这个全局变量
+    time.sleep(1)
+    if lock.acquire(): #修改数据前枷锁
+        num -= 1
+        print('num-->%s'%num)
+        logger.logger.info('num-->%s'%num)
+        lock.release() #修改后释放
+
+def watchdog(num):
+    print('final num:',num)
+
+def callback(success, result):
+    print("id-->%s,success-->%s\n"%(num,success))
+
+num = 10  #设定一个共享变量
+lock = threading.Lock() #生成全局锁
+pool = thread_pool.ThreadPool(5)
+for i in range(10):
+    # pool.run(target=addNum,args=(i,),callback=callback)
+    pool.run(target=addNum,args=(),callback=callback)
+pool.close()
+
+
+
+
+
+
+
+
+
+
+
 # http://www.cnblogs.com/alex3714/articles/5230609.html
 # import time
 # from threading import Thread
@@ -125,35 +167,8 @@
 
 
 
-#######多线程写文件#######
-import time
-import threading
-import logger
 
-def addNum():
-    global num #在每个线程中都获取这个全局变量
-    time.sleep(1)
-    if lock.acquire(): #修改数据前枷锁
-        # with open("E:/1.txt","a") as files:
-        num -= 1
-        print('num-->%s'%num)
-        logger.logger.info('num-->%s'%num)
-            # files.write('num-->%s\n'%num)
-            # files.flush()
-        lock.release() #修改后释放
 
-num = 10  #设定一个共享变量
-thread_list = []
-lock = threading.Lock() #生成全局锁
-for i in range(10):
-    t = threading.Thread(target=addNum)
-    t.start()
-    thread_list.append(t)
-
-for t in thread_list:
-    t.join()
-
-print('final num:',num)
 
 # import time
 # import threading
