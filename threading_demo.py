@@ -12,10 +12,10 @@ import thread_pool
 
 def addNum():
     global num #在每个线程中都获取这个全局变量
-    time.sleep(1)
+    time.sleep(3)
     if lock.acquire(): #修改数据前枷锁
         num -= 1
-        print('num-->%s'%num)
+        # print('num-->%s'%num)
         logger.logger.info('num-->%s'%num)
         lock.release() #修改后释放
 
@@ -23,7 +23,7 @@ def watchdog(num):
     print('final num:',num)
 
 def callback(success, result):
-    print("id-->%s,success-->%s\n"%(num,success))
+    print("id-->%s,success-->%s"%(num,success))
 
 num = 10  #设定一个共享变量
 lock = threading.Lock() #生成全局锁

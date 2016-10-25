@@ -19,7 +19,7 @@ ch.setLevel(logging.WARNING)
 if os.path.exists("%s/logs"%base_dir) is not True:
     os.mkdir("%s/logs"%base_dir)
 # fh = logging.FileHandler("%s/logs/logger.log"%base_dir,"a")
-fh = logging.FileHandler("E:/logger.log","a")
+fh = logging.FileHandler("logger.log","a")
 fh.setLevel(logging.DEBUG)
 # create formatter
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
