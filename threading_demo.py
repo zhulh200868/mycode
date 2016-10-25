@@ -30,7 +30,7 @@ lock = threading.Lock() #生成全局锁
 pool = thread_pool.ThreadPool(5)
 for i in range(10):
     # pool.run(target=addNum,args=(i,),callback=callback)
-    pool.run(target=addNum,args=(),callback=callback)
+    pool.run(target=addNum,callback=callback)
 pool.close()
 
 

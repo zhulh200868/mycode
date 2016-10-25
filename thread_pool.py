@@ -26,7 +26,7 @@ class ThreadPool(object):
         self.generate_list = []
         self.free_list = []
 
-    def run(self, target, args, callback=None):
+    def run(self, target, args=(), callback=None):
         """
         线程池执行一个任务
         :param func: 任务函数
@@ -38,9 +38,6 @@ class ThreadPool(object):
             return
         if len(self.free_list) == 0 and len(self.generate_list) < self.max_num:
             self.generate_thread()
-        # if args == None:
-        #     w = (target, callback,)
-        # else:
         w = (target, args, callback,)
         self.q.put(w)
 
@@ -63,9 +60,6 @@ class ThreadPool(object):
 
             func, arguments, callback = event
             try:
-                # if len(arguments) > 0:
-                #     result = func(*arguments)
-                # else:result = func
                 result = func(*arguments)
                 success = True
             except Exception as e:
