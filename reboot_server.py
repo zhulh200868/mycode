@@ -6,11 +6,12 @@ import commands
 from multiprocessing import Pool
 import os
 
+
 flag=""
 
 def reboot(ip):
     with open("/tmp/reboot.log","a") as files:
-        (status1, output1) = commands.getstatusoutput('''salt -L %s cmd.run "/software/servers/jdk1.6.0_25/bin/jps -lm|grep 'mapreduce.v2.app.MRAppMaster'|grep -v jps|wc -l"'''%ip)
+        (status1, output1) = commands.getstatusoutput('''salt -L %s cmd.run "su - yarn -c yarn 'jps -lm|grep mapreduce.v2.app.MRAppMaster|grep -v jps|wc -l'"'''%ip)
         if status1:
             print "执行jps命令有误,%s"%ip
             files.write("执行jps命令有误,%s\n"%ip)
