@@ -8,7 +8,7 @@ from logging.handlers import RotatingFileHandler
 
 
 #是否要打印在屏幕#
-is_console=False
+is_console=True
 #是否要备份日志#
 is_backfile=True
 
@@ -16,9 +16,11 @@ is_backfile=True
 if os.path.exists("%s/logs"%base_dir) is not True:
     os.mkdir("%s/logs"%base_dir)
 logname = '%s/logs/myscript.log'%base_dir
+# logname = "myapp.log"
+logger = logging.getLogger('')
+logger.setLevel(logging.DEBUG)
 
-logger = logging.getLogger('Logger')
-
+# logging.basicConfig(level=logging.DEBUG,)
 # logging.basicConfig(level=logging.DEBUG,
 #                     format='[%(asctime)s] [%(filename)s] [line:%(lineno)d] [%(levelname)s] %(message)s',
 #                     datefmt='%Y-%m-%d %H:%M:%S',
@@ -28,25 +30,26 @@ logger = logging.getLogger('Logger')
 #定义一个StreamHandler，将INFO级别或更高的日志信息打印到标准错误，并将其添加到当前的日志处理对象#
 if is_console:
     console = logging.StreamHandler()
-    console.setLevel(logging.INFO)
-    formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+    console.setLevel(logging.DEBUG)
+    # formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+    formatter = logging.Formatter('[%(asctime)s] [%(filename)s] [line:%(lineno)d] [%(levelname)s] %(message)s')
     console.setFormatter(formatter)
     logger.addHandler(console)
     # logging.getLogger('').addHandler(console)
 #################################################################################################
 #定义一个RotatingFileHandler，最多备份5个日志文件，每个日志文件最大10M
 if is_backfile:
-    Rthandler = RotatingFileHandler('%s'%logname,maxBytes=100*1024*1024,backupCount=5)
-    Rthandler.setLevel(logging.INFO)
-    formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+    Rthandler = RotatingFileHandler('%s'%logname,maxBytes=10*1024*1024,backupCount=5)
+    Rthandler.setLevel(logging.DEBUG)
+    # formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+    formatter = logging.Formatter('[%(asctime)s] [%(filename)s] [line:%(lineno)d] [%(levelname)s] %(message)s')
     Rthandler.setFormatter(formatter)
     logger.addHandler(Rthandler)
     # logging.getLogger('').addHandler(Rthandler)
 #################################################################################################
 #定义一个FileHandler，将INFO级别或更高的日志信息写入日志中#
 logfile = logging.FileHandler("%s"%logname,'w')
-logfile.setLevel(logging.INFO)
+logfile.setLevel(logging.DEBUG)
 formatter = logging.Formatter('[%(asctime)s] [%(filename)s] [line:%(lineno)d] [%(levelname)s] %(message)s')
 logfile.setFormatter(formatter)
 logger.addHandler(logfile)
-
