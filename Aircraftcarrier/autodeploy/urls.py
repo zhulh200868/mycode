@@ -14,10 +14,8 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from autodeploy import views
+from views import return_data
 
 urlpatterns = [
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^autodeploy/Savelog/', views.return_data),
-    # url(r'^autodeploy/',include('autodeploy.urls'))
+    url(r'^Savelog/$',return_data, name='return_data'),
 ]

@@ -82,6 +82,19 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'autodeploy_test',
+#         'USER':'salt',
+#         'PASSWORD':'salt',
+#         'HOST':'172.19.152.40',
+#         'PORT':'3306',
+#         'OPTIONS':{
+#                    'read_default_file':'/etc/my.cnf',
+#                    },
+#     }
+# }
 
 
 # Internationalization
