@@ -22,10 +22,12 @@ def sendhttp():
 def sendurl():
     user_agent = 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)'
     url = 'http://127.0.0.1:9099/autodeploy/Savelog/'
+    url = 'http://127.0.0.1:9099/autodeploy/salt_api/'
     #url = 'http://www.baidu.com'
     data = {
-        'username':'zhulinhai',
-        'password':'123456'
+        'fun':'os_util.useradd',
+        'tgt':'172.19.152.40',
+        'arg':'zhulh'
     }
     data1 = urllib.urlencode(data)
     # data = urllib.urlencode({'u_team_id':'125', 'author':'args1', 'body_pic':'[pic]jfjjfj[/pic]','body_text':'nihaoma daye'})

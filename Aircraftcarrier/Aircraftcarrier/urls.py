@@ -14,10 +14,11 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from autodeploy import views
+
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^autodeploy/Savelog/', views.return_data),
-    # url(r'^autodeploy/',include('autodeploy.urls'))
+    # url(r'^autodeploy/Savelog/', views.return_data),
+    url(r'^autodeploy/',include('autodeploy.urls')),
+    url(r'^cmdb/',include('Ronaldo.urls')),
 ]

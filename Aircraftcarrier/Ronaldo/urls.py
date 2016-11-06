@@ -14,10 +14,8 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from views import return_data,salt_api,test
+from views import iplist
 
 urlpatterns = [
-    url(r'^Savelog/$',return_data, name='return_data'),
-    url(r'^salt_api/$',salt_api, name='salt_api'),
-    url(r'^test/$',test, name='test'),
+    url(r'^iplist/$',iplist, name='iplist'),
 ]

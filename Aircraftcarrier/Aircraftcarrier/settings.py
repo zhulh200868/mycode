@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'autodeploy',
+    'Ronaldo',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -76,25 +77,25 @@ WSGI_APPLICATION = 'Aircraftcarrier.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'autodeploy_test',
-#         'USER':'salt',
-#         'PASSWORD':'salt',
-#         'HOST':'172.19.152.40',
-#         'PORT':'3306',
-#         'OPTIONS':{
-#                    'read_default_file':'/etc/my.cnf',
-#                    },
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #     }
 # }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'autodeploy_test',
+        'USER':'salt',
+        'PASSWORD':'salt',
+        'HOST':'172.19.152.40',
+        'PORT':'3306',
+        'OPTIONS':{
+                   'read_default_file':'/etc/my.cnf',
+                   },
+    }
+}
 
 
 # Internationalization
