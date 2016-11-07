@@ -14,8 +14,12 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from views import iplist
+from views import home,login,regist,logout,autodeploy
 
 urlpatterns = [
-    url(r'^iplist/$',iplist, name='iplist'),
+    url(r'^home/$',home, name='home'),
+    url(r'^login/$',login, name='login'),
+    url(r'^regist/$',regist, name='regist'),
+    url(r'^logout/$',logout,name = 'logout'),
+    url(r'^home/autodeploy/$',autodeploy, name='autodeploy'),
 ]
