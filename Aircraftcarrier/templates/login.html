@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>HTML5+CSS3+jquery制作个性注册表单代码-xw素材网</title>
+	<link rel="stylesheet" type="text/css" href="/static/login/css/style.css" media="screen, projection">
+	<script type="text/javascript" src="/static/login/js/jquery.min.js"></script>
+	<script type="text/javascript" src="/static/login/js/script.js"></script>
+</head>
+<body>
+	<header>
+		<h1>HTML5+CSS3+jQuery</h1>
+	</header>
+	<!-- BEGIN WRAPPER DIV -->
+	<div id="wrapper">
+		<h3 id="sign-in-tab" class="active">Sign In</h3>
+		<h3 id="register-tab">Register</h3>
+		<!-- BEGIN FORM SECTION -->
+		<ul id="form-section">
+			<!-- BEGIN SIGN IN FORM -->
+			<form class="sign-in-form" action="" method="post">
+			<li>
+				<label>
+					<span>Username</span>
+					<input placeholder="Please enter your username" name="username" pattern="[a-zA-Z0-9]{6,}" type="text" tabindex="1" title="It must contain the username that you have chosen at registration" required autofocus>
+				</label>
+			</li>
+			<li>
+				<label>
+					<span>Password</span>
+					<input placeholder="Please enter your password" name="password" pattern=".{6,}" type="password" tabindex="2" title="It must contain the password that you have chosen at registration" required>
+				</label>
+			</li>
+			<div id="checkbox">
+				<li>
+					<input name="remember-me" type="checkbox" id="remember-me"/>
+					<span class="unchecked-state"></span>
+					<span class="checked-state"></span>
+				</li>
+				<label for="remember-me">Remember me next time</label>
+			</div>
+			<li>
+				<button name="sign-in-submit" type="submit" id="sign-in-submit">Sign In</button>
+			</li>
+			<li>
+				<label class="left-column">
+					<input type="button" class="facebook-login" value="Login with Facebook">
+				</label>
+				<label class="right-column">
+					<input type="button" class="google-login" value="Login with Google">
+				</label>
+			</li>
+			<div style="clear: both;"></div>
+			</form><!-- END OF SIGN IN FORM -->
+
+			<!-- BEGIN REGISTER FORM -->
+			<form class="register-form" action="" method="post">
+			<p><span class="register-numbering">1</span><span class="register-numbering-text">Basic information</span></p>
+			<li>
+				<label class="left-column">
+					<span>First Name*</span>
+					<input type="text" name="fname" tabindex="1" pattern="[a-zA-Z ]{2,}"  placeholder="Please enter your first name" required autofocus title="It must contain only letters and a length of minimum 2 characters!">
+				</label>
+				<label class="right-column">
+					<span>Last Name*</span>
+					<input type="text" name="lname" tabindex="2" pattern="[a-zA-Z ]{2,}" placeholder="Please enter your last name" title="It must contain only letters and a length of minimum 2 characters!" required>
+				</label>
+			</li>
+			<div style="clear: both;"></div>
+			<li>
+				<label>
+					<span>Email*</span>
+					<input type="email" name="email" tabindex="3" placeholder="Please enter a valid email address" title="It must contain a valid email address e.g. 'someone@provider.com' !" required>
+				</label>
+			</li>
+			<li>
+				<label>
+					<span>Telephone*</span>
+					<input type="tel" name="telephone" pattern="(\+?\d[- .]*){7,13}" tabindex="4" placeholder="Please enter your phone number" title="It must contain a valid phone number formed only by numerical values and a length between 7 and 13 characters !" required>
+				</label>
+			</li>
+			<p><span class="register-numbering">2</span><span class="register-numbering-text">Location details</span></p>
+			<li>
+				<label>
+					<span>Address*</span>
+					<input type="text" name="address" tabindex="5" pattern="[a-zA-Z0-9. - , ]{10,}"  placeholder="Please enter your street address" title="It must contain letters and/or separators and a length of minimum 10 characters !" required>
+				</label>
+			</li>
+			<li>
+				<label class="left-column">
+					<span>Country*</span>
+					<input type="text" name="country" tabindex="6" pattern="[a-zA-Z- ]{2,}"  placeholder="Please enter your country" title="It must contain only letters and a length of minimum 2 characters !" required>
+				</label>
+			</li>
+			<li>
+				<label class="right-column">
+					<span>ZIP Code*</span>
+					<input type="text" name="zipcode" tabindex="7" pattern="[0-9 ]{3,}" placeholder="Please enter your zip code" title="It must contain only numbers and a length of minimum 3 characters !" required>
+				</label>
+			</li>
+			<div style="clear: both;"></div>
+			<p><span class="register-numbering">3</span><span class="register-numbering-text">Account credentials</span></p>
+			<li>
+				<label>
+					<span>Username*</span>
+					<input type="text" name="username" tabindex="8" pattern="[a-zA-Z0-9]{6,}"  placeholder="Please enter your username" title="It must contain alphanumeric characters and a length of minimum 6 characters !" required>
+				</label>
+			</li>
+			<li>
+				<label>
+					<span>Password*</span>
+					<input type="password" name="password" tabindex="9" pattern=".{6,}"  placeholder="Please enter your password" title="It can contain all types of characters and a length of minimum 6 characters!" required>
+				</label>
+			</li>
+			<div style="clear: both;"></div>
+			<li>
+				<button name="submit" tabindex="11" type="submit" id="create-account-submit">Create Account</button>
+			</li>
+			</form><!-- END OF REGISTER FORM -->
+		</ul><!-- END OF FORM SECTION -->
+	</div><!-- END OF WRAPPER DIV -->
+
+</body>
+</html>
