@@ -29,26 +29,37 @@ def autodeploy(request):
 
 
 
-# #注册
-# def regist(request):
-#     if request.method == 'POST':
-#         form_value = UserForm(request.POST)
-#         if form_value.is_valid():
-#             #获得表单数据
-#             username = form_value.cleaned_data['username']
-#             password = form_value.cleaned_data['password']
-#             #添加到数据库
-#             User.objects.create(username= username,password=password)
-#             # return HttpResponse('regist success!!')
-#             logger.logger.info("%s regist success !"%username)
-#             return render_to_response('login.html')
-#     else:
-#         form_value = UserForm()
-#     return render_to_response('regist.html',{'form_value':form_value}, context_instance=RequestContext(request))
+#注册
+def regist(request):
+    if request.method == 'POST':
+        print(request.POST)
+        form_value = UserForm(request.POST)
+        if form_value.is_valid():
+            #获得表单数据
+            username = form_value.cleaned_data['username']
+            password = form_value.cleaned_data['password']
+            User.objects.create(username= username,password=password)
+            # first_password = form_value.cleaned_data['first_password']
+            # second_password = form_value.cleaned_data['second_password']
+            # lname = form_value.cleaned_data['lname']
+            # fname = form_value.cleaned_data['fname']
+            # email = form_value.cleaned_data['email']
+            # telephone = form_value.cleaned_data['telephone']
+            # if first_password == second_password:
+            #     #添加到数据库
+            #     User.objects.create(username= username,password=second_password,lname=lname,fname=fname,email=email,telephone=telephone)
+            #     # return HttpResponse('regist success!!')
+            #     logger.logger.info("%s regist success !"%username)
+            return render_to_response('login.html')
+    else:
+        form_value = UserForm()
+    return render_to_response('login.html',{'form_value':form_value}, context_instance=RequestContext(request))
+    # return render_to_response('regist.html',{'form_value':form_value}, context_instance=RequestContext(request))
 
 #登陆
 def login(request):
     if request.method == 'POST':
+        print(request.POST)
         form_value = UserForm(request.POST)
         if form_value.is_valid():
             #获取表单用户密码

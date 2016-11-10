@@ -8,7 +8,7 @@ import models
 import time,sys,os
 base_dir = '/'.join(os.path.abspath(os.path.dirname(__file__)).split("/"))
 sys.path.append(base_dir)
-import logger
+from logger import logger
 # Create your views here.
 
 # http://hustxiaoxian.lofter.com/post/1cc7b162_3a6d738
@@ -23,7 +23,7 @@ def return_data(request):
         models.t_exec_jid_detail.objects.all()
         t_detail = models.t_exec_jid_detail(jid=jid, ip=ip,result=result,detail=detail)
         t_detail.save()
-        logger.logger.info(request.POST)
+        logger.info(request.POST)
     else:
         pass
     return HttpResponse("OK")
@@ -50,6 +50,7 @@ def salt_api(request):
                 params['arg%s'%str(int(num)+1)] = arg
         except Exception,e:
             pass
+        print(params)
         result = sapi.saltCmd(params)
         jid = result[0]['jid']
         task_id = time.time()
@@ -59,7 +60,7 @@ def salt_api(request):
         t_mapping.save()
         t_exec_log = models.t_exec_log(task_id=task_id)
         t_exec_log.save()
-        logger.logger.info(request.POST)
+        logger.info(request.POST)
         while True:
             num = models.t_exec_jid_detail.objects.all().filter(jid=jid).count()
             if num == ip_num:
