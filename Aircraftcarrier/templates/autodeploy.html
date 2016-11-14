@@ -4,24 +4,29 @@
 <link rel="stylesheet" href="/static/autodeploy/autodeploy.css" media="screen" type="text/css" />
 <div class="container">
   <form id="contact" action="/autodeploy/salt_api/" method="post" id="auto_form">
-    <h3>AutoDeploy System</h3>
+    <h2>AutoDeploy System</h2>
     <br>
     <fieldset form="auto_form">
-        <h4>函数名:
-        <select name="fun"  style="width: 150px;height: 25px">
+        <h4>执行命令:
+        <select name="fun"  style="width: 120px;height: 25px">
             {% for value in cmd_name %}
-            <option id="name">{{value.cmd_name}}</option>
+            <option id="fun">{{value.cmd_name}}</option>
             {% endfor %}
+        <!--</select>-->
+        <!--<select name="fun"  style="width: 135px;height: 25px">-->
+            <!--{% for value in cmd_name %}-->
+            <!--<option id="name">{{value.cmd_name}}</option>-->
+            <!--{% endfor %}-->
         </select></h4>
     </fieldset>
     <fieldset>
        <h4>服务器IP列表(用逗号分隔):
-           <input  type="text" name="tgt">
+           <input placeholder="192.168.1.1,192.168.1.2..."  type="text" name="tgt" >
        </h4>
     </fieldset>
     <fieldset>
         <h4>参数名(用四个#号分隔):
-            <input type="text" name="arg" required>
+            <input placeholder="arg1####arg2..." type="text" name="arg" required>
         </h4>
     </fieldset>
     <fieldset>

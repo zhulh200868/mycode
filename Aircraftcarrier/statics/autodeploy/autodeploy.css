@@ -37,7 +37,7 @@
 	margin:5px 0;
 }
 
-#contact h3 {
+#contact h2 {
 	color: #F96;
 	display: block;
 	font-size: 30px;
@@ -45,9 +45,10 @@
 }
 
 #contact h4 {
+	color: #484891;
 	margin:5px 0 15px;
 	display:block;
-	font-size:13px;
+	font-size:14px;
 }
 
 fieldset {
@@ -56,6 +57,7 @@ fieldset {
 	min-width: 100%;
 	padding: 0;
 	width: 100%;
+	/*height: 25px;*/
 }
 
 #contact input[type="text"], #contact input[type="email"], #contact input[type="tel"], #contact input[type="url"], #contact textarea {
@@ -76,7 +78,7 @@ fieldset {
 #contact textarea {
 	height:100px;
 	max-width:100%;
-  resize:none;
+  	resize:none;
 }
 
 #contact button[type="submit"] {
