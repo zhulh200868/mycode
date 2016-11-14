@@ -12,3 +12,6 @@
  u'address': [u'shanghai,ss'],
  u'password': [u'1234567'],
  u'email': [u'1@123.com']}>
+
+
+autodeploy系统：

@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+{% block title %}命令管理{% endblock %}
+{% block content %}
+<style type="text/css">
+body,table{
+font-size:12px;
+}
+table{
+table-layout:fixed;
+empty-cells:show;
+border-collapse: collapse;
+margin:0 auto;
+}
+td{
+height:30px;
+}
+/*h1,h2,h3{*/
+/*font-size:12px;*/
+/*margin:0;*/
+/*padding:0;*/
+/*}*/
+.table{
+border:1px solid #cad9ea;
+color:#666;
+}
+.table th {
+background-repeat:repeat-x;
+height:30px;
+}
+.table td,.table th{
+border:1px solid #cad9ea;
+padding:0 1em 0;
+}
+.table tr.alter{
+background-color:#f5fafe;
+}
+
+/*表单style	*/
+input, textarea {
+    padding: 9px;
+    border: solid 1px #E5E5E5;
+    outline: 0;
+    font: normal 13px/100% Verdana, Tahoma, sans-serif;
+    width: 200px;
+    background: #FFFFFF;
+    }
+
+textarea {
+    width: 400px;
+    max-width: 400px;
+    height: 150px;
+    line-height: 150%;
+    }
+
+input:hover, textarea:hover,
+input:focus, textarea:focus {
+    border-color: #C9C9C9;
+    }
+
+.form label {
+    margin-left: 10px;
+    color: #999999;
+    }
+
+.submit input {
+    width: auto;
+    padding: 9px 15px;
+    background: #617798;
+    border: 0;
+    font-size: 14px;
+    color: #FFFFFF;
+    }
+#Create {
+    width: auto;
+    padding: 9px 15px;
+    background: #617798;
+    border: 0;
+    font-size: 14px;
+    color: #FFFFFF;
+    }
+</style>
+	<div class='container'>
+		<div class='tab-menu-box1'>
+			<div class='menu'>
+				<ul id='tab-menu-title'>
+					<li class='current' content-to='select'>命令查询</li>
+					<li content-to='create'>命令添加</li>
+					<!--<li content-to='delete'>命令删除</li>-->
+				</ul>
+			</div>
+
+			<div id='tab-menu-body' class='content'>
+				<div content='select'>
+					<form action="/cmdb/home/command/" method="post">
+						<!--命令查询: <input type="text" name="cmd_name"/>-->
+						<!--<input type="submit" name="action" value="Select" />-->
+						<h3>命令查询: <input type="text" name="cmd_name"/>
+						<!--<p class="submit">-->
+							<input id="Create"  type="submit" name="action" value="Create" />
+						<!--</p>-->
+						</h3>
+					</form>
+					<table border="2" width="90%" class="table">
+						<tr>
+    						<th>命令ID</th>
+    						<th>命令名称</th>
+							<th>命令描述</th>
+							<th>命令创建者</th>
+							<th>命令创建时间</th>
+							<th>操作</th>
+  						</tr>
+						{% for value in t_cmd%}
+  						<tr class="alter">
+    						<td id="cmd_id">{{value.cmd_id}}</td>
+    						<td>{{value.cmd_name}}</td>
+							<td>{{value.cmd_description}}</td>
+							<td>{{value.create_user}}</td>
+							<td>{{value.create_date}}</td>
+							<td><a href="/cmdb/home/command/" class="delete_post">删除</a>&nbsp;&nbsp;&nbsp;<a> 修改</a></td>
+  						</tr>
+						{% endfor %}
+					</table>
+				</div>
+				<!--<div content='create' class='hide'>-->
+					<!--<form action="/cmdb/home/command/" method="post">-->
+						<!--<h5>命令名称: <input type="text" name="cmd_name"/></h5>-->
+						<!--<h5>命令描述: <input type="text" name="cmd_description"/></h5>-->
+						<!--<h5>命令示例: <input type="text" name="cmd_demo"/></h5>-->
+						<!--<h5>创建者: <input type="text" name="create_user"/></h5>-->
+						<!--<h5>参数: <input type="text" name="cmd_args"/></h5>-->
+						<!--<input type="submit" name="action" value="Create" />-->
+					<!--</form>-->
+				<!--</div>-->
+				<!--<div content='delete' class='hide'>content3</div>-->
+				<div content='create'  class='hide'>
+					<br>
+					<form action="/cmdb/home/command/" method="post"  class="form">
+					<p class="name">
+						<input type="text" name="cmd_name" id="name" />
+						<label for="name">命令名称</label>
+					</p>
+
+					<p class="email">
+						<input type="text" name="cmd_demo" id="email" />
+						<label for="web">命令示例</label>
+					</p>
+					<p class="web">
+						<input type="text" name="create_user" id="web" />
+						<label for="web">创建者</label>
+					</p>
+
+					<p class="text">
+						<textarea name="cmd_description"></textarea>
+						<label for="email">命令描述</label>
+					</p>
+					<p class="web">
+						<input type="text" name="cmd_args" id="web1" />
+						<label for="web">参数</label>
+					</p>
+					<p class="submit">
+						<input type="submit" name="action" value="Create" />
+					</p>
+
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="/static/jquery-1.8.2.js"></script>
+	<script type='text/javascript'>
+	$(function(){
+		ChangeTab('#tab-menu-title', '#tab-menu-body');
+	});
+	function ChangeTab(title, body) {
+			$(title).children().bind("click", function () {
+				$menu = $(this);
+				$content = $(body).find('div[content="' + $(this).attr("content-to") + '"]');
+				$menu.addClass('current').siblings().removeClass('current');
+				$content.removeClass('hide').siblings().addClass('hide');
+			});
+		}
+	$(".delete_post").on("click",function(event){
+		event.preventDefault();
+		var cmd_id = $('#cmd_id').text();
+		$.ajax({
+			type:"POST",
+			url:"/cmdb/command/",
+			data:{"action":"Delete","cmd_id":cmd_id},
+			success: function(result) {
+				alert("成功删除!!");
+				window.location.reload();
+			},
+			error: function(result){
+				alert("删除命令失败!!");
+			}
+		});
+	});
+	</script>
+
+{% endblock%}

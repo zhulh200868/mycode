@@ -19,6 +19,10 @@ def returner(ret):
 def sendRet(ret):
     headers = {'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:23.0) Gecko/20100101 Firefox/23.0'}
     try:
+        if ret['return']['result'] or ret['return']['result'] == "True":
+            ret['return']['result'] = "True"
+        else:
+            ret['return']['result'] = "False"
         data = urllib.urlencode(ret)
         req = urllib2.Request(url, data, headers)
         urllib2.urlopen(req)

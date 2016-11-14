@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Aircraftcarrier CMDB{% endblock %}
+{% block content %}
+    <form action="/autodeploy/salt_api/" method="post" id="auto_form">
+        <!--<a>函数名: <input name="fun"/></a>-->
+        <h5>函数名: <select name="fun" form="auto_form">
+            {% for value in cmd_name %}
+            <option>{{value.cmd_name}}</option>
+            {% endfor %}
+        </select></h5>
+        <h5>服务器列表: <input type="text" name="tgt"/></h5>
+        <h6>参数: <input type="text" name="arg"/></h6>
+        <input type="submit" value="提交" />
+    </form>
+{% endblock%}

@@ -4,8 +4,12 @@
 from django.shortcuts import render,render_to_response,HttpResponseRedirect,HttpResponse
 from django.template import RequestContext
 from django import forms
-from models import User
+from models import User,Command_info
 import logger
+import urllib
+import urllib2
+import json
+# from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
@@ -14,18 +18,35 @@ class UserForm(forms.Form):
     username = forms.CharField(label='用户名',max_length=100)
     password = forms.CharField(label='密码',widget=forms.PasswordInput())
 
+#登陆认证https://segmentfault.com/q/1010000007240873
+def login_required(func):
+    def wrapper(request):
+        username = request.COOKIES.get('username','')
+        if username:
+            return func(request)
+        else:
+            return render_to_response('login.html')
+    return wrapper
 #登陆成功
+@login_required
 def home(request):
     username = request.COOKIES.get('username','')
-    if username:
-        logger.logger.info("%s loggin !"%username)
-        return render_to_response('index.html',{'username':username})
-    else:
-         return render_to_response('login.html')
+    logger.logger.info("[username] %s login home !"%username)
+    return render_to_response('base.html',{'username':username})
+    # return render_to_response('index.html',{'username':username})
+    # username = request.COOKIES.get('username','')
+    # if username:
+    #     logger.logger.info("%s loggin !"%username)
+    #     return render_to_response('index.html',{'username':username})
+    # else:
+    #      return render_to_response('login.html')
 
-
+@login_required
 def autodeploy(request):
-    return render_to_response('autodeploy.html')
+    username = request.COOKIES.get('username','')
+    logger.logger.info("[username] %s login the autodeploy !"%username)
+    cmd_name = Command_info.objects.all().values('cmd_name')
+    return render_to_response('autodeploy.html',{'cmd_name':cmd_name,'username':username})
 
 
 
@@ -50,6 +71,7 @@ def regist(request):
             #     User.objects.create(username= username,password=second_password,lname=lname,fname=fname,email=email,telephone=telephone)
             #     # return HttpResponse('regist success!!')
             #     logger.logger.info("%s regist success !"%username)
+            logger.logger.info("[username] %s regist success !"%username)
             return render_to_response('login.html')
     else:
         form_value = UserForm()
@@ -88,3 +110,67 @@ def logout(request):
     #清理cookie里保存username
     response.delete_cookie('username')
     return response
+
+
+def command(request):
+    username = request.COOKIES.get('username','')
+    # t_cmd = Command_info.objects.all()
+    print(request.POST)
+    if request.POST.get('action') == "Create":
+        print(request.POST)
+        cmd_name = request.POST.get('cmd_name')
+        cmd_description = request.POST.get('cmd_description')
+        cmd_demo = request.POST.get('cmd_demo')
+        create_user = request.POST.get('create_user')
+        if len(create_user) == 0:
+            create_user = username
+        cmd_args = request.POST.get('cmd_args')
+        Command_info.objects.create(cmd_name= cmd_name,cmd_description=cmd_description,cmd_demo=cmd_demo,create_user=create_user,cmd_args=cmd_args)
+    elif request.POST.get('action') == "Delete":
+        d=Command_info.objects.get(cmd_id=request.POST.get('cmd_id'))
+        d.delete()
+    elif request.POST.get('action') == "Modify":
+        print "Modify"
+    elif request.POST.get('action') == "Select":
+        #模糊查询，https://www.douban.com/note/301166150/
+        t_value = Command_info.objects.all().filter(cmd_name__contains=request.POST.get('cmd_name'))
+        return render_to_response('command.html',{'t_cmd':t_value,'username':username})
+    else:
+        # t_cmd = Command_info.objects.all()
+        pass
+    t_cmd = Command_info.objects.all()
+    return render_to_response('command.html',{'t_cmd':t_cmd,'username':username})
+
+# def base(request):
+#     return render_to_response('base.html')
+
+def test(request):
+    if request.method == "POST":
+        id = str(request.POST.get("id").strip("u''"))
+    else:
+        return render_to_response('test.html')
+        #id = str(request.GET.get("id").strip("u''"))
+    sql="SELECT t1.sku_id , t1.type , t1.jd_prc , t1.stk_prc , (t1.jd_prc - t1.stk_prc) / t1.jd_prc as ratio from gdm.gdm_m03_item_sku_price_da t1 where sku_id = '"+id+"' and dt = sysdate( - 1)"
+    # prestoUrl = "http://bdpadhoc.jd.com:8888/presto/execute"
+    prestoUrl = "http://127.0.0.1:8888/presto/execute"
+    request = urllib2.Request(prestoUrl, data=sql)
+    request.add_header('X-Presto-User', 'mart_vdp')  # presto 用户名
+    request.add_header('X-Presto-Password', 'Ac8ZpCtKVj63mk2yAFmR') # presto 密码
+    request.add_header('X-Presto-Catalog', 'mart_vdp_druid') # presto  catalog
+    request.add_header('X-Presto-Schema', 'app') # catalog 下库名
+    res = urllib2.urlopen(request)
+    # 返回数据为 json 格式
+    ret=res.read()
+    # print ret
+    #print json.loads(ret)['data'][0][1]
+    #print json.dumps(json.loads(ret)['data']).strip("[]").split(",")
+    #data={"sku_id":json.loads(ret)['data'][0],"type":json.loads(ret)['data'][1],"jd_prc":json.loads(ret)['data'][2],"stk_prc":json.loads(ret)['data'][3]}
+    if len(json.loads(ret)['data'][0]) == 5:
+        # data={"sku_id":json.loads(ret)['data'][0][0],"type":json.loads(ret)['data'][0][1],"jd_prc":json.loads(ret)['data'][0][2],"stk_prc":json.loads(ret)['data'][0][3]}
+        print json.loads(ret)['data'][0][0]
+        print json.loads(ret)['data'][0][1]
+        print json.loads(ret)['data'][0][2]
+        print json.loads(ret)['data'][0][3]
+        return HttpResponse("sku_id:%s,jd_prc:%s,stk_prc:%s,stk_prc:%s"%(json.loads(ret)['data'][0][0],json.loads(ret)['data'][0][1],json.loads(ret)['data'][0][2],json.loads(ret)['data'][0][3]))
+    else:
+        return HttpResponse(ret)

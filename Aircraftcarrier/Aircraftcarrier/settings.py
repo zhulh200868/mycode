@@ -141,3 +141,5 @@ STATICFILES_DIRS=(
 # )
 
 APPEND_SLASH=False
+
+# LOGIN_URL = '/cmdb/login/'
