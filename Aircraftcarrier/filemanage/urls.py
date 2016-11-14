@@ -14,12 +14,11 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-
+from views import newdatas,updatedatas,downfile,downfilebysoft
 
 urlpatterns = [
-    url(r'^admin/', include(admin.site.urls)),
-    # url(r'^autodeploy/Savelog/', views.return_data),
-    url(r'^autodeploy/',include('autodeploy.urls')),
-    url(r'^cmdb/',include('Ronaldo.urls')),
-    url(r'^filemanage/',include('filemanage.urls')),
+    url(r'^newdatas/',newdatas, name='newdatas'),
+    url(r'^updatedatas/',updatedatas, name='updatedatas'),
+    url(r'^downfile/',downfile, name='downfile'),
+    url(r'^downfilebysoft/',downfilebysoft, name='downfilebysoft'),
 ]

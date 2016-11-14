@@ -42,6 +42,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'autodeploy',
     'Ronaldo',
+    'filemanage',
 )
 
 MIDDLEWARE_CLASSES = (

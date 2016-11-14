@@ -70,7 +70,7 @@ input:focus, textarea:focus {
     font-size: 14px;
     color: #FFFFFF;
     }
-#Create {
+#Select {
     width: auto;
     padding: 9px 15px;
     background: #617798;
@@ -91,12 +91,12 @@ input:focus, textarea:focus {
 
 			<div id='tab-menu-body' class='content'>
 				<div content='select'>
-					<form action="/cmdb/home/command/" method="post">
+					<form action="/cmdb/command/" method="post">
 						<!--命令查询: <input type="text" name="cmd_name"/>-->
 						<!--<input type="submit" name="action" value="Select" />-->
 						<h3>命令查询: <input type="text" name="cmd_name"/>
 						<!--<p class="submit">-->
-							<input id="Create"  type="submit" name="action" value="Create" />
+							<input id="Select"  type="submit" name="action" value="Select" />
 						<!--</p>-->
 						</h3>
 					</form>
@@ -134,7 +134,7 @@ input:focus, textarea:focus {
 				<!--<div content='delete' class='hide'>content3</div>-->
 				<div content='create'  class='hide'>
 					<br>
-					<form action="/cmdb/home/command/" method="post"  class="form">
+					<form action="/cmdb/command/" method="post"  class="form">
 					<p class="name">
 						<input type="text" name="cmd_name" id="name" />
 						<label for="name">命令名称</label>

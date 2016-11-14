@@ -9,6 +9,7 @@ import logger
 import urllib
 import urllib2
 import json
+from django.core.paginator import Paginator
 # from django.contrib.auth.decorators import login_required
 
 # Create your views here.
@@ -32,7 +33,7 @@ def login_required(func):
 def home(request):
     username = request.COOKIES.get('username','')
     logger.logger.info("[username] %s login home !"%username)
-    return render_to_response('base.html',{'username':username})
+    return render_to_response('home.html',{'username':username})
     # return render_to_response('index.html',{'username':username})
     # username = request.COOKIES.get('username','')
     # if username:
@@ -133,8 +134,13 @@ def command(request):
         print "Modify"
     elif request.POST.get('action') == "Select":
         #模糊查询，https://www.douban.com/note/301166150/
+        #分页查询，http://www.cnblogs.com/holbrook/archive/2012/02/09/2357348.html
         t_value = Command_info.objects.all().filter(cmd_name__contains=request.POST.get('cmd_name'))
-        return render_to_response('command.html',{'t_cmd':t_value,'username':username})
+        p = Paginator(t_value, 1)
+        print(p.object_list)
+        page1 = p.page(1)
+        print(t_value)
+        return render_to_response('command.html',{'t_cmd':page1.object_list,'username':username})
     else:
         # t_cmd = Command_info.objects.all()
         pass
@@ -143,6 +149,11 @@ def command(request):
 
 # def base(request):
 #     return render_to_response('base.html')
+
+
+def filemanage(request):
+    return render_to_response('filemanage.html')
+
 
 def test(request):
     if request.method == "POST":

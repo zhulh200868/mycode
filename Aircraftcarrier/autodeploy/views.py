@@ -45,6 +45,7 @@ def return_data(request):
 
 @csrf_exempt
 def salt_api(request):
+    print(request.POST)
     if request.method == "POST":
         form_value = SaltForm(request.POST)
         if form_value.is_valid():
