@@ -9,7 +9,8 @@ import logger
 import urllib
 import urllib2
 import json
-from django.core.paginator import Paginator
+import dns_api
+from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 # from django.contrib.auth.decorators import login_required
 
 # Create your views here.
@@ -47,7 +48,22 @@ def autodeploy(request):
     username = request.COOKIES.get('username','')
     logger.logger.info("[username] %s login the autodeploy !"%username)
     cmd_name = Command_info.objects.all().values('cmd_name')
-    return render_to_response('autodeploy.html',{'cmd_name':cmd_name,'username':username})
+    cmd_name_dict={}
+    for i in cmd_name:
+        if i['cmd_name'].split(".")[0] not in cmd_name_dict.keys():
+            cmd_name_dict[i['cmd_name'].split(".")[0]] = []
+        cmd_name_dict[i['cmd_name'].split(".")[0]].append(i['cmd_name'])
+        # else:
+        #     cmd_name_dict[i['cmd_name'].split(".")[0]].append(i['cmd_name'])
+    print(request.GET.get('action'))
+    if len(request.GET) > 0:
+        if int(request.GET.get('action')) == 1:
+            cmd_name = request.GET.get('cmd_name')
+            print('--->',cmd_name_dict[cmd_name])
+            return HttpResponse(json.dumps(cmd_name_dict[cmd_name]))
+            # return render_to_response('autodeploy.html',{'cmd_name_dict':cmd_name,'cmd_name':cmd_name_dict[cmd_name],'username':username})
+    return render_to_response('autodeploy.html',{'cmd_name_dict':cmd_name_dict,'cmd_name':'','username':username})
+    # return render_to_response('autodeploy.html',{'cmd_name':cmd_name,'username':username})
 
 
 
@@ -116,7 +132,7 @@ def logout(request):
 def command(request):
     username = request.COOKIES.get('username','')
     # t_cmd = Command_info.objects.all()
-    print(request.POST)
+    # print(request.POST)
     if request.POST.get('action') == "Create":
         print(request.POST)
         cmd_name = request.POST.get('cmd_name')
@@ -136,15 +152,50 @@ def command(request):
         #模糊查询，https://www.douban.com/note/301166150/
         #分页查询，http://www.cnblogs.com/holbrook/archive/2012/02/09/2357348.html
         t_value = Command_info.objects.all().filter(cmd_name__contains=request.POST.get('cmd_name'))
-        p = Paginator(t_value, 1)
-        print(p.object_list)
-        page1 = p.page(1)
-        print(t_value)
-        return render_to_response('command.html',{'t_cmd':page1.object_list,'username':username})
+        # p = Paginator(t_value, 1)
+        # print(p.object_list)
+        # page1 = p.page(1)
+        # print(t_value)
+        # limit = 5
+        try:
+            limit = int(request.GET.get("page_num"))
+        except Exception,e:
+            limit = 3
+        paginator = Paginator(t_value,limit)
+        page = request.GET.get('page')
+        try:
+            t_cmd = paginator.page(page)
+        except PageNotAnInteger:
+            t_cmd = paginator.page(1)
+        except EmptyPage:
+            t_cmd = paginator.page(paginator.num_pages)
+        return render_to_response('command.html',{'t_cmd':t_cmd,'username':username})
     else:
         # t_cmd = Command_info.objects.all()
         pass
+    # limit = 5
+    try:
+        limit = int(request.GET.get("page_num"))
+        # limit = 5
+    except Exception,e:
+        limit = 3
+    print("page_num-->%s"%limit)
     t_cmd = Command_info.objects.all()
+    paginator = Paginator(t_cmd,limit)
+    # t_test = Paginator(t_cmd,5)
+    # articleList = t_test.page(1)
+    # print("--->",articleList)
+    page = request.GET.get('page')
+    # print("page_num-->%s"%request.GET.get("page_num"))
+    try:
+        t_cmd = paginator.page(page)
+    except PageNotAnInteger:
+        t_cmd = paginator.page(1)
+    except EmptyPage:
+        t_cmd = paginator.page(paginator.num_pages)
+    print("t_cmd-->%s"%t_cmd)
+    # if limit == 1:
+    #     return render_to_response('test.html',{'t_cmd':t_cmd,'username':username})
     return render_to_response('command.html',{'t_cmd':t_cmd,'username':username})
 
 # def base(request):
@@ -154,6 +205,18 @@ def command(request):
 def filemanage(request):
     return render_to_response('filemanage.html')
 
+def dns(request):
+    if request.method == 'POST':
+        print(request.POST)
+        if request.POST.get("clustername") == "client":
+            clustername = ""
+        else:clustername = request.POST.get("clustername")
+        with open("E:\Python\workspace\mycode\Aircraftcarrier\Ronaldo\dns_ip.txt","w") as dns_ip:
+            for i in request.POST.get("tgt").split(","):
+                dns_ip.write("%s,%s,%s\n"%(i, request.POST.get("product"), clustername))
+        ret=dns_api.main()
+        return HttpResponse(ret)
+    return render_to_response('dns.html')
 
 def test(request):
     if request.method == "POST":
@@ -185,3 +248,20 @@ def test(request):
         return HttpResponse("sku_id:%s,jd_prc:%s,stk_prc:%s,stk_prc:%s"%(json.loads(ret)['data'][0][0],json.loads(ret)['data'][0][1],json.loads(ret)['data'][0][2],json.loads(ret)['data'][0][3]))
     else:
         return HttpResponse(ret)
+
+def hello(request):
+    limit = 3
+    topics =  Command_info.objects.all()
+    print(topics)
+    paginator = Paginator(topics,limit)
+
+    page = request.GET.get('page')
+    print(page)
+    try:
+        topics = paginator.page(page)
+    except PageNotAnInteger:
+        topics = paginator.page(1)
+    except EmptyPage:
+        topics = paginator.page(paginator.num_pages)
+    print(topics)
+    return render_to_response('hello.html', {'topics': topics})

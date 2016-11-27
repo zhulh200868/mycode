@@ -1,13 +1,115 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-    <form action="/cmdb/test/" method="post">
-        <a>id: <input name="id"/></a>
-        <input type="submit" value="提交" />
-    </form>
-</body>
-</html>
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+    <!--<meta charset="UTF-8">-->
+    <!--<title>Title</title>-->
+<!--</head>-->
+<!--<body>-->
+    <!--<form action="/cmdb/test/" method="post">-->
+        <!--<a>id: <input name="id"/></a>-->
+        <!--<input type="submit" value="提交" />-->
+    <!--</form>-->
+<!--</body>-->
+<!--</html>-->
+	<div class='container' id="container">
+		<div class='tab-menu-box1'>
+			<div class='menu'>
+				<ul id='tab-menu-title'>
+					<li class='current' content-to='select'>命令查询</li>
+					<li content-to='create'>命令添加</li>
+					<!--<li content-to='delete'>命令删除</li>-->
+				</ul>
+			</div>
+
+			<div id='tab-menu-body' class='content'>
+				<div content='select'>
+					<form action="/cmdb/command/" method="post">
+						<!--命令查询: <input type="text" name="cmd_name"/>-->
+						<!--<input type="submit" name="action" value="Select" />-->
+						<h3>命令查询: <input type="text" name="cmd_name"/>
+						<!--<p class="submit">-->
+							<input id="Select"  type="submit" name="action" value="Select" />
+						<!--</p>-->
+						</h3>
+					</form>
+					<table border="2" width="90%" class="table" id="cmd_table">
+						<tr>
+    						<th>命令ID</th>
+    						<th>命令名称</th>
+							<th>命令描述</th>
+							<th>命令创建者</th>
+							<th>命令创建时间</th>
+							<th>操作</th>
+  						</tr>
+						{% for value in t_cmd%}
+  						<tr class="alter">
+    						<td id="cmd_id">{{value.cmd_id}}</td>
+    						<td>{{value.cmd_name}}</td>
+							<td>{{value.cmd_description}}</td>
+							<td>{{value.create_user}}</td>
+							<td>{{value.create_date}}</td>
+							<td><a href="/cmdb/home/command/" class="delete_post">删除</a>&nbsp;&nbsp;&nbsp;<a> 修改</a></td>
+  						</tr>
+						{% endfor %}
+					</table>
+					<p style="text-align:center;">
+							{% if t_cmd.has_previous %}
+  							<a href="?page={{ t_cmd.previous_page_number }}">上一页</a>
+  							{% endif %}
+  							{# t_cmd.paginator.number_pages 返回总页数 #}
+  							Page {{ t_cmd.number }} of {{ t_cmd.paginator.num_pages }}.
+							{% if t_cmd.has_next %}
+  							<a href="?page={{ t_cmd.next_page_number }}">下一页</a>
+						{% endif %}
+						<select class="page_num" name="page_num" id="page_num">
+								<option selected="selected">1</option>
+								<option>3</option>
+								<option>10</option>
+						</select>
+					</p>
+				</div>
+				<!--<div content='create' class='hide'>-->
+					<!--<form action="/cmdb/home/command/" method="post">-->
+						<!--<h5>命令名称: <input type="text" name="cmd_name"/></h5>-->
+						<!--<h5>命令描述: <input type="text" name="cmd_description"/></h5>-->
+						<!--<h5>命令示例: <input type="text" name="cmd_demo"/></h5>-->
+						<!--<h5>创建者: <input type="text" name="create_user"/></h5>-->
+						<!--<h5>参数: <input type="text" name="cmd_args"/></h5>-->
+						<!--<input type="submit" name="action" value="Create" />-->
+					<!--</form>-->
+				<!--</div>-->
+				<!--<div content='delete' class='hide'>content3</div>-->
+				<div content='create'  class='hide'>
+					<br>
+					<form action="/cmdb/command/" method="post"  class="form">
+					<p class="name">
+						<input type="text" name="cmd_name" id="name" />
+						<label for="name">命令名称</label>
+					</p>
+
+					<p class="email">
+						<input type="text" name="cmd_demo" id="email" />
+						<label for="web">命令示例</label>
+					</p>
+					<p class="web">
+						<input type="text" name="create_user" id="web" />
+						<label for="web">创建者</label>
+					</p>
+
+					<p class="text">
+						<textarea name="cmd_description"></textarea>
+						<label for="email">命令描述</label>
+					</p>
+					<p class="web">
+						<input type="text" name="cmd_args" id="web1" />
+						<label for="web">参数</label>
+					</p>
+					<p class="submit">
+						<input type="submit" name="action" value="Create" />
+					</p>
+
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>

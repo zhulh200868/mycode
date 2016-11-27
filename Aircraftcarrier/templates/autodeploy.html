@@ -8,16 +8,19 @@
     <br>
     <fieldset form="auto_form">
         <h4>执行命令:
-        <select name="fun"  style="width: 120px;height: 25px">
-            {% for value in cmd_name %}
-            <option id="fun">{{value.cmd_name}}</option>
+        <select name="fun"  style="width: 165px;height: 25px" id="func">
+            <option id="default_selected">请选择</option>
+            {% for value in cmd_name_dict %}
+            <option id="fun">{{value}}</option>
             {% endfor %}
-        <!--</select>-->
-        <!--<select name="fun"  style="width: 135px;height: 25px">-->
+        </select>
+        <select name="fun"  style="width: 185px;height: 25px" id="test">
+            <option>请选择</option>
             <!--{% for value in cmd_name %}-->
-            <!--<option id="name">{{value.cmd_name}}</option>-->
+            <!--<option id="name">{{value}}</option>-->
             <!--{% endfor %}-->
-        </select></h4>
+        </select>
+        </h4>
     </fieldset>
     <fieldset>
        <h4>服务器IP列表(用逗号分隔):
@@ -50,4 +53,84 @@
         <!--<p class="submit"><input type="submit" value="提交" /></p>-->
     <!--</form>-->
     <!--</div>-->
+    <script src="/static/jquery-1.8.2.js"></script>
+	<script type='text/javascript'>
+         $(function(){
+            $('#func').change(function(){
+                cmd_name = $(this).find('option:selected').val();
+                $('#default_selected').remove();
+                if (cmd_name != "请选择"){
+                    $('#test :gt(0)').remove();
+//                    $('#test').append("<option></option>");
+                    Init();
+//                    alert("成功删除!!");
+                }
+            });
+         });
+         function Init(){
+             Request('/cmdb/autodeploy/',func_name,{"action":"1","cmd_name":cmd_name})
+         }
+         function Request(url,func,data){
+             $.ajax({
+					type:'GET',
+					data:data,
+					url:url,
+					cache:false,
+					async:true,
+					success:func
+				});
+         }
+         function func_name(data){
+//             alert(data);
+             data = JSON.parse(data);
+             $.each(data,function(i){
+                 console.log(data[i]);
+                 op = "<option value="+i+">"+data[i]+"</option>";
+                 $('#test').append(op);
+             });
+         }
+//        $(function(){
+////            Init();
+//            $('#func').change(function(){
+//                cmd_name = $(this).find('option:selected').val();
+//                $('#default_selected').remove();
+//                if (cmd_name != "请选择"){
+//                    $.ajax({
+//                        type:"GET",
+//                        url:"/cmdb/autodeploy/",
+//                        data:{"action":"1","cmd_name":cmd_name},
+//                        success: function(result) {
+//				            alert("成功删除!!");
+////				            window.location.reload();
+//                            $.each(data,function(i){
+//
+//                            });
+////                            op="<option>hello</option>";
+////                            $('#test').append(op);
+//			            },
+//                        error: function(result) {
+//				            alert("失败!!");
+//				            window.location.reload();
+//			            }
+//                    });
+//                }
+//
+//            });
+//
+//        });
+//        function Init(){
+//            $.ajax({
+//			type:"GET",
+//			url:"/cmdb/autodeploy/",
+//			data:{"cmd_id":cmd_id},
+//			success: function(result) {
+//				alert("成功删除!!");
+//				window.location.reload();
+//			},
+//			error: function(result){
+//				alert("删除命令失败!!");
+//			}
+//		});
+//        }
+    </script>
 {% endblock%}

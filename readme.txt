@@ -34,3 +34,5 @@ salt的api程序，以后有需要调用salt可以使用该程序
 9、logger.py
 说明：
 日志模块
+
+10、restart_hadoop

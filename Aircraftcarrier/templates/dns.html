@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}任务执行{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="/static/autodeploy/autodeploy.css" media="screen" type="text/css" />
+<div class="container">
+  <form id="contact" action="/cmdb/dns/" method="post" id="auto_form">
+    <h2>Apply DNS</h2>
+    <br>
+    <fieldset form="auto_form">
+        <h4>产品线:
+        <select name="product"  style="width: 165px;height: 30px" id="func1">
+            <option id="product_hadoop" selected="selected">hadoop</option>
+            <option id="product_client">client</option>
+        </select>
+        </h4>
+    </fieldset>
+    <fieldset>
+       <h4>服务器IP列表(用逗号分隔):
+           <input placeholder="192.168.1.1,192.168.1.2..."  type="text" name="tgt"  style="width: 230px;height: 30px" >
+       </h4>
+    </fieldset>
+    <fieldset form="auto_form">
+        <h4>集群名称:
+            <select name="clustername"  style="width: 165px;height: 30px" id="func2">
+                <option id="clustername_druid" selected="selected">druid</option>
+                <option id="clustername_jmartad">jmartad</option>
+                <option id="clustername_client">client</option>
+            </select>
+            <!--<input placeholder="clustername" type="text" name="clustername" required>-->
+        </h4>
+    </fieldset>
+    <fieldset>
+      <button name="submit" type="submit" id="contact-submit" data-submit="...Sending">Submit</button>
+    </fieldset>
+  </form>
+</div>
+{% endblock%}

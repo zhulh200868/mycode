@@ -14,7 +14,7 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from views import home,login,logout,autodeploy,regist,command,test,filemanage
+from views import home,login,logout,autodeploy,regist,command,test,filemanage,dns,hello
 
 urlpatterns = [
     url(r'^home/$',home, name='home'),
@@ -24,6 +24,8 @@ urlpatterns = [
     url(r'^autodeploy/$',autodeploy, name='autodeploy'),
     url(r'^command/$',command, name='command'),
     url(r'^filemanage/$',filemanage, name='filemanage'),
+    url(r'^dns/$',dns, name='dns'),
     # url(r'^home/base/$',base, name='base'),
     url(r'^test/$',test, name='test'),
+    url(r'^hello/$',hello, name='hello'),
 ]

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+{% for topic in topics %}
+    <tr>
+    <td>{{topic.cmd_name}}</td>
+    <td>{{topic.cmd_description}}</td>
+    <td>{{topic.create_user}}</td>
+    <td>{{topic.create_date}}</td>
+    </tr>
+{% endfor %}
+
+<!--&lt;!&ndash; 第一种分页显示方式 &ndash;&gt;-->
+<!--<p>-->
+  <!--{# topics.paginator.page_range 这个函数返回包含一个所有页码数的 range 对象 #}-->
+  <!--{# 即 range(1, topics.paginator.num_pages + 1) #}-->
+  <!--{% for page_number in topics.paginator.page_range %}-->
+    <!--{% ifequal page_number  topics.number %}-->
+      <!--{{ page_number }}-->
+    <!--{% else %}-->
+      <!--<a href="?page={{ page_number }}">{{ page_number }}</a>-->
+    <!--{% endifequal %}-->
+  <!--{% endfor %}-->
+<!--</p>-->
+
+
+<!-- 另一种分页显示方式 -->
+<p>
+{% if topics.has_previous %}
+  <a href="?page={{ topics.previous_page_number }}">Previous</a>
+  {% endif %}
+  {# topics.paginator.number_pages 返回总页数 #}
+  Page {{ topics.number }} of {{ topics.paginator.num_pages }}.
+{% if topics.has_next %}
+  <a href="?page={{ topics.next_page_number }}">Next</a>
+{% endif %}
+</p>
+</body>
+</html>

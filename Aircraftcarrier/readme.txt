@@ -15,3 +15,7 @@
 
 
 autodeploy系统：
+已经在autodeploy.html中实现二级联动
+11月26号，实现简单的分页查询
+简单的例子，可以查看Ronaldo中views.hello的方法
+页面条数功能还未完成
