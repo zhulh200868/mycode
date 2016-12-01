@@ -12,6 +12,7 @@ from logger import logger
 from django import forms
 from thread_pool import ThreadPool
 # Create your views here.
+from django.conf import settings
 
 # http://hustxiaoxian.lofter.com/post/1cc7b162_3a6d738
 
@@ -47,6 +48,12 @@ def return_data(request):
 def salt_api(request):
     print(request.POST)
     if request.method == "POST":
+        if request.META.has_key('HTTP_X_FORWARDED_FOR'):
+            ip =  request.META['HTTP_X_FORWARDED_FOR']
+        else:
+            ip = request.META['REMOTE_ADDR']
+        if ip not in settings.CLIENT_SAFE_IF:
+            return HttpResponse("The ip is not safe !")
         form_value = SaltForm(request.POST)
         if form_value.is_valid():
             sapi = saltAPI()

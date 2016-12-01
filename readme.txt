@@ -36,3 +36,6 @@ salt的api程序，以后有需要调用salt可以使用该程序
 日志模块
 
 10、restart_hadoop
+
+11、hadoop_urllib.py使用用法：
+python hadoop_urllib.py yarn.nodemanager.resource.memory-mb 100352 8042

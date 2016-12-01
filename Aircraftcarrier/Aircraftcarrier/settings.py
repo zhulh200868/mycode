@@ -144,3 +144,6 @@ STATICFILES_DIRS=(
 APPEND_SLASH=False
 
 # LOGIN_URL = '/cmdb/login/'
+
+#安装客户端IP列表
+CLIENT_SAFE_IF=["127.0.0.1","172.19.152.40"]

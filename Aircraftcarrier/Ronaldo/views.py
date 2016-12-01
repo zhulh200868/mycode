@@ -11,6 +11,7 @@ import urllib2
 import json
 import dns_api
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
+from django.conf import settings
 # from django.contrib.auth.decorators import login_required
 
 # Create your views here.
@@ -45,6 +46,12 @@ def home(request):
 
 @login_required
 def autodeploy(request):
+    if request.META.has_key('HTTP_X_FORWARDED_FOR'):
+        ip =  request.META['HTTP_X_FORWARDED_FOR']
+    else:
+        ip = request.META['REMOTE_ADDR']
+    if ip in settings.CLIENT_SAFE_IF:
+        print("hello")
     username = request.COOKIES.get('username','')
     logger.logger.info("[username] %s login the autodeploy !"%username)
     cmd_name = Command_info.objects.all().values('cmd_name')

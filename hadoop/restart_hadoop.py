@@ -23,13 +23,13 @@ class Restarted(object):
         pass
     ##重启nodemanger##
     def restartnm(self,ip):
-        logger.info("[%s] It's to start the %s"%(multiprocessing.current_process().name,ip))
+        logger.info("[%s] [%s] It's to start the %s"%(multiprocessing.current_process().name,sys._getframe().f_code.co_name,ip))
         #在这里判断是不是有MRAppMaster
         (status, output) = commands.getstatusoutput('''salt -L %s cmd.run "su - yarn -c 'source .bashrc;jps -lm|grep mapreduce.v2.app.MRAppMaster|grep -v jps|wc -l'"'''%ip)
         if status:
             Not_restart_list.append(ip)
-            logger.critical("[%s] [Not_restart_list] The fail ip is --> %s"%(multiprocessing.current_process().name,Not_restart_list))
-            logger.critical("[%s] 执行jps命令有误,%s"%(multiprocessing.current_process().name,ip))
+            logger.critical("[%s] [%s] [Not_restart_list] The fail ip is --> %s"%(multiprocessing.current_process().name,sys._getframe().f_code.co_name,Not_restart_list))
+            logger.critical("[%s] [%s] 执行jps命令有误,%s"%(multiprocessing.current_process().name,sys._getframe().f_code.co_name,ip))
             return False
             # return "执行jps命令有误,%s"%ip
         else:
@@ -38,8 +38,8 @@ class Restarted(object):
                 if output.split("\n")[1].strip() == "0":
                     for i in range(1,4):
                         (status,output) = commands.getstatusoutput("salt -L %s  hadoop_util.stopnm"%ip)
-                        logger.critical("[%s] This is the %s --->%s"%(multiprocessing.current_process().name,i,output))
-                        (status,output) = commands.getstatusoutput('''salt -L %s cmd.run "ps -ef|grep yarn|grep -v grep|awk '{print $2}'|xargs kill -9"'''%ip)
+                        logger.critical("[%s] [%s] This is the %s to stopnm--->%s"%(multiprocessing.current_process().name,sys._getframe().f_code.co_name,i,output))
+                        (status,output) = commands.getstatusoutput('''salt -L %s cmd.run "ps -ef|grep yarn|grep -v grep|awk '{print \$2}'|xargs kill -9"'''%ip)
                         (status,output) = commands.getstatusoutput("salt -L %s cmd.run 'ps -ef|grep yarn|grep -v grep|wc -l'"%ip)
                         if int(status) == 0:
                             if len(output.split("\n")) == 2 and output.count("Not") == 0:
@@ -48,57 +48,60 @@ class Restarted(object):
                     time.sleep(2)
                     for i in range(1,4):
                         (status,output) = commands.getstatusoutput("salt -L %s hadoop_util.startnm"%ip)
-                        logger.critical("[%s] This is the %s --->%s"%(multiprocessing.current_process().name,i,output))
+                        logger.critical("[%s] [%s] This is the %s to startnm--->%s"%(multiprocessing.current_process().name,sys._getframe().f_code.co_name,i,output))
                         time.sleep(5)
                         (status,output) = commands.getstatusoutput('''salt -L %s cmd.run "ps -ef|grep 'nodemanager.NodeManager'|grep -v grep|wc -l"'''%ip)
                         if int(status) == 0:
                             if len(output.split("\n")) == 2 and output.count("Not") == 0:
                                 if int(output.split("\n")[1].strip()) == 1:
                                     Restart_list.append(ip)
-                                    logger.critical("[%s]  [Restart_list] The successful number is [ %s ] and the list is  --> %s"%(len(Restart_list),Restart_list))
-                                    logger.warning("[%s] The %s is restarted the nodemanager !"%ip)
+                                    logger.critical("[%s] [%s] [Restart_list] The successful number is [ %s ] and the list is  --> %s"%(multiprocessing.current_process().name,sys._getframe().f_code.co_name,len(Restart_list),Restart_list))
+                                    logger.warning("[%s] [%s] The %s is restarted the nodemanager !"%(multiprocessing.current_process().name,sys._getframe().f_code.co_name,ip))
                                     break
                 else:
                     Not_restart_list.append(ip)
-                    logger.critical("[%s]  [Not_restart_list] The fail ip is --> %s"%(multiprocessing.current_process().name,Not_restart_list))
-                    logger.critical("[%s] 存在AppMaster,%s"%(multiprocessing.current_process().name,ip))
+                    logger.critical("[%s] [%s]  [Not_restart_list] The fail ip is --> %s"%(multiprocessing.current_process().name,sys._getframe().f_code.co_name,Not_restart_list))
+                    logger.critical("[%s] [%s] 存在AppMaster,%s"%(multiprocessing.current_process().name,sys._getframe().f_code.co_name,ip))
                     return False
                     # return "存在AppMaster,%s"%ip
             else:
                 Not_restart_list.append(ip)
-                logger.critical("[%s]  [Not_restart_list] The fail ip is --> %s"%(multiprocessing.current_process().name,Not_restart_list))
-                logger.critical("[%s] The %s is problem,you must check it!"%(multiprocessing.current_process().name,ip))
+                logger.critical("[%s] [%s] [Not_restart_list] The fail ip is --> %s"%(multiprocessing.current_process().name,sys._getframe().f_code.co_name,Not_restart_list))
+                logger.critical("[%s] [%s] The %s is problem,you must check it!"%(multiprocessing.current_process().name,sys._getframe().f_code.co_name,ip))
                 return False
         return True
         # return "The %s is starting the datanode!"%ip
         ##重启nodemanger##
+            ##重启nodemanger##
     def restartdn(self,ip):
-        logger.info("It's to start the %s"%ip)
-        for i in range(3):
-            (status,output) = commands.getstatusoutput("salt -L %s  hadoop_util.stopdn"%ip)
-            logger.critical(output)
-            (status,output) = commands.getstatusoutput('''salt -L %s cmd.run "ps -ef|grep datanode|grep -v grep|awk '{print $2}'|xargs kill -9"'''%ip)
-            (status,output) = commands.getstatusoutput("salt -L %s cmd.run 'ps -ef|grep datanode|grep -v grep|wc -l'"%ip)
+        logger.info("[%s] [%s] It's to start the %s"%(multiprocessing.current_process().name,sys._getframe().f_code.co_name,ip))
+        for i in range(1,4):
+            (status,output) = commands.getstatusoutput("salt -L %s  hadoop_util.stopnm"%ip)
+            logger.critical("[%s] [%s] This is the %s to stopnm--->%s"%(multiprocessing.current_process().name,sys._getframe().f_code.co_name,i,output))
+            (status,output) = commands.getstatusoutput('''salt -L %s cmd.run "ps -ef|grep yarn|grep -v grep|awk '{print \$2}'|xargs kill -9"'''%ip)
+            (status,output) = commands.getstatusoutput("salt -L %s cmd.run 'ps -ef|grep yarn|grep -v grep|wc -l'"%ip)
             if int(status) == 0:
                 if len(output.split("\n")) == 2 and output.count("Not") == 0:
                     if int(output.split("\n")[1].strip()) == 0:
                         break
             time.sleep(2)
-            for i in range(3):
-                (status,output) = commands.getstatusoutput("salt -L %s hadoop_util.startdn"%ip)
-                logger.critical(output)
+            for i in range(1,4):
+                (status,output) = commands.getstatusoutput("salt -L %s hadoop_util.startnm"%ip)
+                logger.critical("[%s] [%s] This is the %s to startnm--->%s"%(multiprocessing.current_process().name,sys._getframe().f_code.co_name,i,output))
                 time.sleep(5)
-                (status,output) = commands.getstatusoutput('''salt -L %s cmd.run "ps -ef|grep 'datanode'|grep -v grep|wc -l"'''%ip)
+                (status,output) = commands.getstatusoutput('''salt -L %s cmd.run "ps -ef|grep 'nodemanager.NodeManager'|grep -v grep|wc -l"'''%ip)
                 if int(status) == 0:
                     if len(output.split("\n")) == 2 and output.count("Not") == 0:
                         if int(output.split("\n")[1].strip()) == 1:
-                            logger.warning("The %s is restarted the datanode !"%ip)
+                            Restart_list.append(ip)
+                            logger.critical("[%s] [%s] [Restart_list] The successful number is [ %s ] and the list is  --> %s"%(multiprocessing.current_process().name,len(Restart_list),sys._getframe().f_code.co_name,Restart_list))
+                            logger.warning("[%s] [%s] The %s is restarted the nodemanager !"%(multiprocessing.current_process().name,sys._getframe().f_code.co_name,ip))
                             break
-            else:
-                logger.critical("The %s is problem,you must check it!"%ip)
-                return False
         return True
         # return "The %s is starting the datanode!"%ip
+        ##重启nodemanger##
+    def curl(self,ip):
+        pass
 
 ##看门狗函数##
 def watchdog(host_list):
@@ -111,13 +114,15 @@ def watchdog(host_list):
         ip_list= reip.findall(output)
         ip_list=list(set(ip_list))
         num = time.strftime('%H:%M',time.localtime(time.time()))
+        counter=0
         if len(ip_list) > 0:
             logger.info("%s"%str(ip_list))
             for ip in ip_list:
                 if ip in host_list:
                     true_ip = ip
+                    counter=1
                     (status,output) = commands.getstatusoutput("ps -ef|grep %s|grep -v grep|awk -F ' ' '{print $5}'|head -1"%ip)
-        if output:
+        if counter==1 and len(output) > 0:
             if int(num.split(":")[0]) - int(output.split(":")[0]) >= 1 or int(num.split(":")[1]) - int(output.split(":")[1]) > 3:
                 # (status,output) = commands.getstatusoutput("ps -ef|grep -E 'test.ping|cmd.run|hadoop_util'|grep -v grep|awk '{print $2}'")
                 (status,output) = commands.getstatusoutput("ps -ef|grep %s|grep -v grep|awk '{print $2}'"%true_ip)
