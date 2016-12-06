@@ -71,32 +71,31 @@ class Restarted(object):
                 return False
         return True
         # return "The %s is starting the datanode!"%ip
-        ##重启nodemanger##
-            ##重启nodemanger##
+    ##重启datanode##
     def restartdn(self,ip):
         logger.info("[%s] [%s] It's to start the %s"%(multiprocessing.current_process().name,sys._getframe().f_code.co_name,ip))
         for i in range(1,4):
-            (status,output) = commands.getstatusoutput("salt -L %s  hadoop_util.stopnm"%ip)
-            logger.critical("[%s] [%s] This is the %s to stopnm--->%s"%(multiprocessing.current_process().name,sys._getframe().f_code.co_name,i,output))
-            (status,output) = commands.getstatusoutput('''salt -L %s cmd.run "ps -ef|grep yarn|grep -v grep|awk '{print \$2}'|xargs kill -9"'''%ip)
-            (status,output) = commands.getstatusoutput("salt -L %s cmd.run 'ps -ef|grep yarn|grep -v grep|wc -l'"%ip)
+            (status,output) = commands.getstatusoutput("salt -L %s  hadoop_util.stopdn"%ip)
+            logger.critical("[%s] [%s] This is the %s to stopdn--->%s"%(multiprocessing.current_process().name,sys._getframe().f_code.co_name,i,output))
+            (status,output) = commands.getstatusoutput('''salt -L %s cmd.run "ps -ef|grep datanode|grep -v grep|awk '{print \$2}'|xargs kill -9"'''%ip)
+            (status,output) = commands.getstatusoutput("salt -L %s cmd.run 'ps -ef|grep datanode|grep -v grep|wc -l'"%ip)
             if int(status) == 0:
                 if len(output.split("\n")) == 2 and output.count("Not") == 0:
                     if int(output.split("\n")[1].strip()) == 0:
                         break
             time.sleep(2)
-            for i in range(1,4):
-                (status,output) = commands.getstatusoutput("salt -L %s hadoop_util.startnm"%ip)
-                logger.critical("[%s] [%s] This is the %s to startnm--->%s"%(multiprocessing.current_process().name,sys._getframe().f_code.co_name,i,output))
-                time.sleep(5)
-                (status,output) = commands.getstatusoutput('''salt -L %s cmd.run "ps -ef|grep 'nodemanager.NodeManager'|grep -v grep|wc -l"'''%ip)
-                if int(status) == 0:
-                    if len(output.split("\n")) == 2 and output.count("Not") == 0:
-                        if int(output.split("\n")[1].strip()) == 1:
-                            Restart_list.append(ip)
-                            logger.critical("[%s] [%s] [Restart_list] The successful number is [ %s ] and the list is  --> %s"%(multiprocessing.current_process().name,len(Restart_list),sys._getframe().f_code.co_name,Restart_list))
-                            logger.warning("[%s] [%s] The %s is restarted the nodemanager !"%(multiprocessing.current_process().name,sys._getframe().f_code.co_name,ip))
-                            break
+        for i in range(1,4):
+            (status,output) = commands.getstatusoutput("salt -L %s hadoop_util.startdn"%ip)
+            logger.critical("[%s] [%s] This is the %s to startdn--->%s"%(multiprocessing.current_process().name,sys._getframe().f_code.co_name,i,output))
+            time.sleep(8)
+            (status,output) = commands.getstatusoutput('''salt -L %s cmd.run "ps -ef|grep 'datanode'|grep -v grep|wc -l"'''%ip)
+            if int(status) == 0:
+                if len(output.split("\n")) == 2 and output.count("Not") == 0:
+                    if int(output.split("\n")[1].strip()) == 1:
+                        Restart_list.append(ip)
+                        logger.critical("[%s] [%s] [Restart_list] The successful number is [ %s ] and the list is  --> %s"%(multiprocessing.current_process().name,sys._getframe().f_code.co_name,len(Restart_list),Restart_list))
+                        logger.warning("[%s] [%s] The %s is restarted the datanode !"%(multiprocessing.current_process().name,sys._getframe().f_code.co_name,ip))
+                        break
         return True
         # return "The %s is starting the datanode!"%ip
         ##重启nodemanger##
@@ -109,29 +108,34 @@ def watchdog(host_list):
     while True:
         # (status,output) = commands.getstatusoutput("ps -ef|grep 'test.ping'|grep 'bash'|grep -v grep|awk '{print $5}'")
         true_ip=0
-        (status,output) = commands.getstatusoutput("ps -ef|grep -E 'test.ping|cmd.run|hadoop_util'|grep 'salt'|grep -v grep")
+        # (status,output) = commands.getstatusoutput("ps -ef|grep -E 'test.ping|cmd.run|hadoop_util|datanode|nodemanager'|grep 'salt'|grep -v grep")
+        (status,output) = commands.getstatusoutput("ps -ef|grep -E 'test.ping|cmd.run|hadoop_util|datanode|yarn|nodemanager'|grep 'salt'|grep -v grep")
         reip = re.compile(r'(?<![\.\d])(?:\d{1,3}\.){3}\d{1,3}(?![\.\d])')
         ip_list= reip.findall(output)
         ip_list=list(set(ip_list))
         num = time.strftime('%H:%M',time.localtime(time.time()))
         counter=0
         if len(ip_list) > 0:
-            logger.info("%s"%str(ip_list))
+            logger.info("[%s] [%s] This %s is doubt"%(multiprocessing.current_process().name,sys._getframe().f_code.co_name,str(ip_list)))
             for ip in ip_list:
                 if ip in host_list:
                     true_ip = ip
                     counter=1
-                    (status,output) = commands.getstatusoutput("ps -ef|grep %s|grep -v grep|awk -F ' ' '{print $5}'|head -1"%ip)
+                    # (status,output) = commands.getstatusoutput("ps -ef|grep %s|grep -v grep|awk -F ' ' '{print $5}'|head -1"%ip)
+                    (status,output) = commands.getstatusoutput("ps -ef|grep %s|grep salt|awk -F ' ' '{print $5}'|head -1"%ip)
+                    if len(output) > 0:
+                        break
         if counter==1 and len(output) > 0:
             if int(num.split(":")[0]) - int(output.split(":")[0]) >= 1 or int(num.split(":")[1]) - int(output.split(":")[1]) > 3:
                 # (status,output) = commands.getstatusoutput("ps -ef|grep -E 'test.ping|cmd.run|hadoop_util'|grep -v grep|awk '{print $2}'")
-                (status,output) = commands.getstatusoutput("ps -ef|grep %s|grep -v grep|awk '{print $2}'"%true_ip)
+                # (status,output) = commands.getstatusoutput("ps -ef|grep %s|grep -v grep|awk '{print $2}'"%true_ip)
+                (status,output) = commands.getstatusoutput("ps -ef|grep %s|grep salt|awk '{print $2}'"%true_ip)
                 for process in output.split("\n"):
-                    logger.critical("[%s] %s process is --> %s"%(multiprocessing.current_process().name,num,process))
+                    logger.critical("[%s] [%s] %s process is --> %s"%(multiprocessing.current_process().name,sys._getframe().f_code.co_name,num,process))
                     os.system("kill -9 %s"%process)
-                logger.critical("[%s] These process are killed ---> %s"%(multiprocessing.current_process().name,output))
+                logger.critical("[%s] [%s] These process are killed ---> %s"%(multiprocessing.current_process().name,sys._getframe().f_code.co_name,output))
         time.sleep(60)
-        logger.info("[%s] The watchdog process is working !"%multiprocessing.current_process().name)
+        logger.info("[%s] [%s] The watchdog process is working !"%(multiprocessing.current_process().name,sys._getframe().f_code.co_name))
 
 def wrap(ip):
     action = sys.argv[1]
@@ -190,7 +194,7 @@ def main():
     if result.successful():
         # logger.critical("These ips are not restart --> %s"%str(Not_restart_list))
         # logger.critical("These ips are successfully restarted --> %s"%str(Restart_list))
-        logger.critical("All of the servers are rebooted !")
+        logger.critical("All of the servers are finished !")
         shutil.copy("/tmp/host.txt","/tmp/hosts.txt")
         process.terminate()
     # process.join()

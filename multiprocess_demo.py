@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding=utf8 -*-
 
-from multiprocessing import Pool
+from multiprocessing import Pool,Lock
 import time
 
 
@@ -11,6 +11,9 @@ def test(num):
 
 
 if __name__ == "__main__":
+    lock = Lock()
+    lock.acquire()
+    lock.release()
     pool = Pool(1)
     for i in range(10):
         pool.apply_async(func=test,args=(i,))

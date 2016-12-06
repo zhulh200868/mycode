@@ -4,13 +4,13 @@
 import logging,os,sys
 base_dir = '/'.join(os.path.abspath(os.path.dirname(__file__)).split("/")[:-1])
 sys.path.append(base_dir)
-from logging.handlers import RotatingFileHandler
+from logging.handlers import RotatingFileHandler,TimedRotatingFileHandler
 
 
 #是否要打印在屏幕#
 is_console=True
 #是否要备份日志#
-is_backfile=True
+is_backfile=False
 #是否写日志#
 is_writefile = True
 
@@ -51,9 +51,16 @@ if is_backfile:
     # logging.getLogger('').addHandler(Rthandler)
 #################################################################################################
 #定义一个FileHandler，将INFO级别或更高的日志信息写入日志中#
+# if is_writefile:
+#     logfile = logging.FileHandler("%s"%logname,'w')
+#     logfile.setLevel(logging.DEBUG)
+#     formatter = logging.Formatter('[%(asctime)s] [%(filename)s] [line:%(lineno)d] [%(levelname)s] %(message)s')
+#     logfile.setFormatter(formatter)
+#     logger.addHandler(logfile)
 if is_writefile:
-    logfile = logging.FileHandler("%s"%logname,'w')
-    logfile.setLevel(logging.DEBUG)
+    logfile =  TimedRotatingFileHandler("%s"%logname, "D", 1, 10)
+    logfile.suffix = "%Y%m%d"
     formatter = logging.Formatter('[%(asctime)s] [%(filename)s] [line:%(lineno)d] [%(levelname)s] %(message)s')
+    logfile.setLevel(logging.INFO)
     logfile.setFormatter(formatter)
     logger.addHandler(logfile)
