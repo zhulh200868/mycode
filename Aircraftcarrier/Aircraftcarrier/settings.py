@@ -119,7 +119,8 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+# TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
@@ -146,4 +147,4 @@ APPEND_SLASH=False
 # LOGIN_URL = '/cmdb/login/'
 
 #安装客户端IP列表
-CLIENT_SAFE_IF=["127.0.0.1","172.19.152.40"]
+CLIENT_SAFE_IF=["127.0.0.1","172.19.152.40","172.22.91.80"]

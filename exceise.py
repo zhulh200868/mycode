@@ -1,6 +1,122 @@
 #!/usr/bin/env python
 # -*- coding=utf8 -*-
 
+
+import logging.config
+from multiprocessing import Pool,Process
+# http://blog.csdn.net/ubuntu64fan/article/details/51315969
+# http://www.cnblogs.com/restran/p/4743840.html
+
+# logging.config.dictConfig({
+#     'version': 1,
+#     'disable_existing_loggers': True,
+#     'formatters': {
+#         'verbose': {
+#             'format': "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+#             'datefmt': "%Y-%m-%d %H:%M:%S"
+#         },
+#         'simple': {
+#             'format': '%(levelname)s %(message)s'
+#         },
+#     },
+#     'handlers': {
+#         'null': {
+#             'level': 'DEBUG',
+#             'class': 'logging.NullHandler',
+#         },
+#         'console': {
+#             'level': 'DEBUG',
+#             'class': 'logging.StreamHandler',
+#             'formatter': 'verbose'
+#         },
+#         'file': {
+#             'level': 'DEBUG',
+#             'class': 'logging.handlers.RotatingFileHandler',
+#             # 当达到10MB时分割日志
+#             'maxBytes': 1024 * 100,
+#             # 最多保留50份文件
+#             'backupCount': 50,
+#             # If delay is true,
+#             # then file opening is deferred until the first call to emit().
+#             'delay': True,
+#             'filename': 'logs/mysite.log',
+#             'formatter': 'verbose'
+#         }
+#     },
+#     'loggers': {
+#         '': {
+#             'handlers': ['file'],
+#             'level': 'INFO',
+#         },
+#     }
+# })
+
+# logging.config.dictConfig({
+#     'version': 1,
+#     'disable_existing_loggers': True,
+#     'formatters': {
+#         'verbose': {
+#             'format': "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+#             'datefmt': "%Y-%m-%d %H:%M:%S"
+#         },
+#         'simple': {
+#             'format': '%(levelname)s %(message)s'
+#         },
+#     },
+#     'handlers': {
+#         'null': {
+#             'level': 'DEBUG',
+#             'class': 'logging.NullHandler',
+#         },
+#         'console': {
+#             'level': 'DEBUG',
+#             'class': 'logging.StreamHandler',
+#             'formatter': 'verbose'
+#         },
+#         'file': {
+#             'level': 'DEBUG',
+#             'class': 'cloghandler.ConcurrentRotatingFileHandler',
+#             # 当达到10MB时分割日志
+#             'maxBytes': 1024 * 100,
+#             # 最多保留50份文件
+#             'backupCount': 50,
+#             # If delay is true,
+#             # then file opening is deferred until the first call to emit().
+#             'delay': True,
+#             'filename': 'logs/mysite.log',
+#             'formatter': 'verbose'
+#         }
+#     },
+#     'loggers': {
+#         '': {
+#             'handlers': ['file'],
+#             'level': 'INFO',
+#         },
+#     }
+# })
+#
+# logger = logging.getLogger(__name__)
+#
+# def test(num):
+#     logger.info('---------------------------------------log info%s'%num)
+#
+# def watchdog():
+#     for i in range(20000,40000):
+#         logger.info('log info---------------------------------%s'%i)
+#
+# if __name__ == '__main__':
+#     pool = Pool(1)
+#     process = Process(target=watchdog,args=())
+#     process.start()
+#     for i in range(100,20000):
+#         ret=pool.apply_async(func=test,args=(i,))
+#     pool.close()
+#     pool.join()
+#     if ret.successful():
+#         for i in range(100):
+#             logger.info('---------------------------------------log info---------------------------------%s'%i)
+
+
 """
 获取当前文件名、当前函数名、当前行号
 """
@@ -112,6 +228,7 @@ You want to write data to a file,but only if it don't already exist on the files
 #
 # print("{name} is my friend,and {name} like to play footbal!".format(name = "Jack"))
 
+'''
 import urllib2,json
 def balancer_ip(num):
     try:
@@ -149,9 +266,82 @@ def balancer_ip(num):
 
 if __name__ == "__main__":
     balancer_ip(200)
+'''
+
+# value = "www.baidu.com"
+# # 把所有字符中的小写字母转换成大写字母
+# print(value.upper())
+# # 把所有字符中的大写字母转换成小写字母
+# print(value.lower())
+# # 把第一个字母转化为大写字母，其余小写
+# print(value.capitalize())
+# # 把每个单词的第一个字母转换为大写，其余小写
+# print(value.title())
+
+
+# import multiprocessing
+#
+# def func(name):
+#     # print 'start process'
+#     # return name.upper()
+#     return False
+#
+# if __name__ == '__main__':
+#     p = multiprocessing.Pool(1)
+#     print p.map(func,["aa",'bb'])
+#     # print p.map(func,['kel','smile'])
+#     # for i in  p.imap(func,['kel','smile']):
+#     #     print i
+
+
+# import multiprocessing
+# import time
+# def func(name):
+#     print 'start process'
+#     time.sleep(2)
+#     return name.upper()
+#
+# if __name__ == '__main__':
+#     results = []
+#     p = multiprocessing.Pool(1)
+#     for i in range(1):
+#         res = p.apply_async(func,args=('kel',))
+#     print(res.get(2.1))
+#     #     results.append(res)
+#     # for i in results:
+#     #     print i.get(2.1)
 
 
 
+# import urllib
+# import urllib2
+#
+# def post(url, data):
+#     req = urllib2.Request(url)
+#     data = urllib.urlencode(data)
+#     #enable cookie
+#     opener = urllib2.build_opener(urllib2.HTTPCookieProcessor())
+#     response = opener.open(req, data)
+#     return response.read()
+#
+# def main():
+#     url = 'http://172.19.152.40/autodeploy/externalServe/clusterRegisterInfo'
+#     data = {"clustername":"jdtest1","ns":["ns1","ns2","ns10"],"types":[4]}
+#     print post(url, data)
+#
+# if __name__ == '__main__':
+#     main()
+
+
+
+from logger import Log_Rota,Log_Time
+
+logger1 = Log_Rota()
+logger1.logger.info("hello1")
+
+logger2 = Log_Time()
+logger2.is_writefile = "false"
+logger2.logger.error("hello2")
 
 
 

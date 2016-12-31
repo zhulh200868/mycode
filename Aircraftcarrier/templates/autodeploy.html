@@ -8,13 +8,13 @@
     <br>
     <fieldset form="auto_form">
         <h4>执行命令:
-        <select name="fun"  style="width: 165px;height: 25px" id="func">
+        <select name="fun1"  style="width: 165px;height: 25px" id="func">
             <option id="default_selected">请选择</option>
             {% for value in cmd_name_dict %}
-            <option id="fun">{{value}}</option>
+            <option id="fun1">{{value}}</option>
             {% endfor %}
         </select>
-        <select name="fun"  style="width: 185px;height: 25px" id="test">
+        <select name="fun2"  style="width: 185px;height: 25px" id="test">
             <option>请选择</option>
             <!--{% for value in cmd_name %}-->
             <!--<option id="name">{{value}}</option>-->
@@ -85,7 +85,8 @@
              data = JSON.parse(data);
              $.each(data,function(i){
                  console.log(data[i]);
-                 op = "<option value="+i+">"+data[i]+"</option>";
+//                 op = "<option id='fun2' value="+i+">"+data[i]+"</option>";
+                 op = "<option id='fun2' value="+data[i]+">"+data[i]+"</option>";
                  $('#test').append(op);
              });
          }

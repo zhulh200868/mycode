@@ -13,6 +13,7 @@ from django import forms
 from thread_pool import ThreadPool
 # Create your views here.
 from django.conf import settings
+import json
 
 # http://hustxiaoxian.lofter.com/post/1cc7b162_3a6d738
 
@@ -20,7 +21,8 @@ pool = ThreadPool(5)
 
 #表单
 class SaltForm(forms.Form):
-    fun = forms.CharField(label='方法',max_length=100)
+    fun1 = forms.CharField(label='方法',max_length=100)
+    fun2 = forms.CharField(label='方法',max_length=100)
     tgt = forms.CharField(label='IP列表',widget=forms.PasswordInput())
     arg = forms.CharField(label='参数',widget=forms.PasswordInput())
 
@@ -39,7 +41,7 @@ def return_data(request):
         # models.t_exec_jid_detail.objects.all()
         t_detail = models.t_exec_jid_detail(jid=jid, ip=ip,result=result,detail=detail)
         t_detail.save()
-        logger.info(request.POST)
+        logger.info(" - 接收到的报文是: %s"%json.loads(request.POST))
     else:
         pass
     return HttpResponse("OK")
@@ -52,15 +54,21 @@ def salt_api(request):
             ip =  request.META['HTTP_X_FORWARDED_FOR']
         else:
             ip = request.META['REMOTE_ADDR']
+        print(ip)
+        logger.info(ip)
         if ip not in settings.CLIENT_SAFE_IF:
             return HttpResponse("The ip is not safe !")
         form_value = SaltForm(request.POST)
+        print(form_value.is_valid())
         if form_value.is_valid():
             sapi = saltAPI()
             client = "local_async"
             # fun = str(request.POST.get("fun").strip("u''"))
             # tgt = str(request.POST.get("tgt").strip("u''"))
-            fun = form_value.cleaned_data['fun']
+            # fun1 = form_value.cleaned_data['fun1']
+            # fun2 = form_value.cleaned_data['fun2']
+            # fun = "%s.%s"%(fun1,fun2)
+            fun = form_value.cleaned_data['fun2']
             tgt = form_value.cleaned_data['tgt']
             ret = "callback_util"
             expr_form = "list"
@@ -71,6 +79,7 @@ def salt_api(request):
                         "tgt":tgt,
                         "ret":ret,
                     }
+            print(params)
         try:
             # args = str(request.POST.get("arg").strip("u''"))
             args = form_value.cleaned_data['arg']
@@ -79,7 +88,9 @@ def salt_api(request):
         except Exception,e:
             pass
         print(params)
+        logger.info(" - 接收到命令串为: %s"%params)
         result = sapi.saltCmd(params)
+        logger.info(" - 调用 Salt-API 返回信息: %s"%result)
         jid = result[0]['jid']
         task_id = time.time()
         no = 1
@@ -112,7 +123,7 @@ def salt_api(request):
                     counter += 1
                     time.sleep(10)
         if flag:
-            for i in tgt:
+            for i in tgt.split(","):
                 success_ip_list.append(i)
             return HttpResponse("The command is successful !%s"%success_ip_list)
         else:

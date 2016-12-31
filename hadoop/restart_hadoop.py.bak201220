@@ -6,10 +6,10 @@ import commands
 from multiprocessing import Pool,Process
 import multiprocessing
 import os,re
-# from logger import logger
+from logger import logger
 import sys
 import shutil
-from logger import Log_Rota,Log_Time
+
 
 # debug = "debug"
 # info = "info"
@@ -18,12 +18,6 @@ from logger import Log_Rota,Log_Time
 
 Not_restart_list=[]
 Restart_list=[]
-
-if sys.version_info < (2,7):
-    Logger = Log_Time()
-else:Logger = Log_Rota()
-logger = Logger.logger
-
 class Restarted(object):
     def __init__(self):
         pass
@@ -143,7 +137,6 @@ def watchdog(host_list):
         time.sleep(60)
         logger.info("[%s] [%s] The watchdog process is working !"%(multiprocessing.current_process().name,sys._getframe().f_code.co_name))
 
-#为了实现反射需要单独弄一个函数
 def wrap(ip):
     action = sys.argv[1]
     restarted = Restarted()
